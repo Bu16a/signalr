@@ -1,6 +1,8 @@
-﻿@using BadNews.Elevation
+﻿@using BadNews.BlazorComponents
+@using BadNews.Components
+@using BadNews.Elevation
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model BadNews.Models.News.FullArticleModel
-<script src="/lib/jquery/dist/jquery.min.js"></script>
 <main role="main" class="container">
     <div class="row">
         <div class="col-md-8 news-main">
@@ -17,16 +19,7 @@
                     </form>
                 }
                 @Html.Raw(Model.Article.ContentHtml)
-                <label>
-                    Пользователь <input id="userInput">
-                </label>
-                <label>
-                    Комментарий <input id="commentInput">
-                </label>
-                <div>
-                    <button id="sendButton">Отправить</button>
-                </div>
-                <div id="comments"></div>
+                @(await Html.RenderComponentAsync<Comments>(RenderMode.ServerPrerendered))
             </div>
         </div>
 
@@ -42,14 +35,3 @@
         <a href="#">Наверх</a>
     </p>
 </footer>
-<script type="text/javascript">
-    $.get(`/api/news/@Model.Article.Id.ToString()/comments`, function(data) {
-        const commentsDiv = document.getElementById('comments');
-        
-        for (const comment of data.comments) {
-            const li = document.createElement("li");
-            li.textContent = `${comment.user} говорит: ${comment.value}`;
-            commentsDiv.appendChild(li);
-        }
-    });
-</script>
